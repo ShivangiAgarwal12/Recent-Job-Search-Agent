@@ -16,6 +16,13 @@ no GUI, no subscription, no algorithm deciding what you see.
 # Job Search Agent 🔍
 
 An AI-powered job search agent that searches the web for job postings matching your profile and saves results to a file.
+
+# Building Features (In Progress)
+ - Agent for job search (finished)
+ - Email yourself the results (under progress)
+ - Remove duplicate jobs (under progress)
+ - More to follow .. 
+
 ## Stack
 
 | Component | Tool | Cost |
@@ -108,6 +115,10 @@ Once you understand this loop, you can swap in any LLM and any set of tools to b
 ## Useful Resources
 - [Basic Agent Building](https://medium.com/data-science/build-a-general-purpose-ai-agent-c40be49e7400)
 - [Basics of LLM](https://web.stanford.edu/class/cs224n/)
+- [LangChain Start](https://docs.langchain.com/oss/python/langchain/quickstart)
+- [Detailed Transformers](https://imaddabbura.github.io/posts/nlp/Transformer-Architecture-Explained.html)
+- [Hugging Face Transformers Tutorial](https://web.stanford.edu/class/cs224n/materials/hf_transformers_tutorial.pdf)
+- [Production ML](https://mlip-cmu.github.io/book/03-machine-learning-for-software-engineers-in-a-nutshell.html)
 
 
 ## License
