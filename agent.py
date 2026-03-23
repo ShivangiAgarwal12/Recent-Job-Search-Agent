@@ -32,7 +32,7 @@ import google.generativeai as genai
 import google.ai.generativelanguage as glm
 # from duckduckgo_search import DDGS
 from ddgs import DDGS
-os.environ["GEMINI_API_KEY"] = "AIzaSyBOjuGj97XUUJh3uKvQA3RIGZ6FCjZsMtk"
+os.environ["GEMINI_API_KEY"] = "Update your key here"
 
 
 

@@ -80,22 +80,8 @@ job-search-agent/
 └── .gitignore        # keeps your API key off GitHub
 ```
 
-## .gitignore
 
-Create a `.gitignore` file in your project folder with this content:
-```
-.env
-*.txt
-__pycache__/
-*.pyc
-```
 
-## Free Tier Limits
-
-| Model | Requests/day | Requests/min |
-|---|---|---|
-| gemini-2.5-flash-lite | 1,000 | 15 |
-| gemini-2.5-flash | 500 | 10 |
 
 ## Key Concepts
 
