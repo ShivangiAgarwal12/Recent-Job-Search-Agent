@@ -1,0 +1,65 @@
+Job Search Results
+Generated: 2026-03-23 16:02:34
+============================================================
+
+Job Postings:
+
+1. Title: Python Developer Machine Learning
+   Company: Multiple Companies (LinkedIn search)
+   Location: Bengaluru, Karnataka, India
+   Type: Full-time
+   Description: Search for new Python Developer Machine Learning jobs daily. Leverage professional network and get hired.
+   URL: https://in.linkedin.com/jobs/python-developer-machine-learning-jobs-bengaluru
+
+2. Title: Machine Learning Engineer
+   Company: Multiple Companies (Naukri.com search)
+   Location: Bengaluru, India
+   Type: Full-time
+   Description: Explore machine learning engineer job opportunities in Bengaluru on Naukri.com and find the perfect role for your career growth.
+   URL: https://www.naukri.com/machine-learning-engineer-jobs-in-bengaluru?expJD=true
+
+3. Title: Machine Learning Python Jobs
+   Company: Multiple Companies (Glassdoor search)
+   Location: Bengaluru, India
+   Type: Full-time
+   Description: Search Machine learning python jobs in Bengaluru with company ratings & salaries. Numerous open jobs available.
+   URL: https://www.glassdoor.co.in/Job/bengaluru-machine-learning-python-jobs-SRCH_IL.0,9_IC2940587_KO10,33.htm
+
+4. Title: Machine Learning Engineer
+   Company: Multiple Companies (Simply Hired search)
+   Location: Bengaluru, Karnataka
+   Type: Full-time
+   Description: Thousands of machine learning engineer jobs available in Bengaluru, Karnataka. See salaries, compare reviews, easily apply, and get hired.
+   URL: https://www.simplyhired.co.in/search?q=machine+learning+engineer&l=bengaluru,+karnataka
+
+5. Title: Junior Data Scientist
+   Company: Multiple Companies (Wellfound/Glassdoor search)
+   Location: Bengaluru, India
+   Type: Full-time/Internship
+   Description: Opportunities for Junior Data Scientists with Python and SQL skills. Some roles may involve developing and deploying predictive models. Experience with large datasets is a plus. Some roles require immediate joining. Some roles are contract-based (6 months).
+   URL: https://www.glassdoor.co.in/Job/bengaluru-jr-data-scientist-jobs-SRCH_IL.0,9_IC2940587_KO10,27.htm
+
+6. Title: Machine learning jobs
+   Company: Multiple Companies (Glassdoor search)
+   Location: Bengaluru
+   Type: Fresher/Internship
+   Description: Knowledge of machine learning algorithms and Python. Familiarity with data handling and model training. Must be available to join immediately.
+   URL: https://www.glassdoor.co.in/Job/bengaluru-machine-learning-jobs-SRCH_IL.0,9_IC2940587_KO10,26.htm
+
+7. Title: Python Developer
+   Company: Multiple Companies (Glassdoor search)
+   Location: Bengaluru, Karnataka
+   Type: Full-time
+   Description: Experienced Python Developer to join an engineering team to create dynamic software applications. Requires 1 to 3 years of experience.
+   URL: https://www.glassdoor.co.in/Job/bengaluru-python-developer-jobs-SRCH_IL.0,9_IC2940587_KO10,26.htm
+
+8. Title: Junior Data Scientist (Python, SQL)
+   Company: HealthTech (Client Server)
+   Location: Bengaluru, India
+   Type: Full-time
+   Description: Develop and deploy predictive models and analytical tools using Python and SQL with large datasets.
+   URL: https://www.client-server.com/job/junior-data-scientist-python-sql-healthtech
+
+Note: Specific experience levels were not always explicitly stated in the search results, but "entry-level" and "1-3 years" were mentioned, aligning with the requested 2 years of experience.
+
+Also included are roles for "Machine Learning Engineer" and "Junior Data Scientist" which are closely related and often require Python skills."
