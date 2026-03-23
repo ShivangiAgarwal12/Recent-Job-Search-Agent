@@ -17,7 +17,7 @@ no GUI, no subscription, no algorithm deciding what you see.
 
 An AI-powered job search agent that searches the web for job postings matching your profile and saves results to a file.
 
-# Building Features (In Progress)
+### Building Features (In Progress)
  - Agent for job search (finished)
  - Email yourself the results (under progress)
  - Remove duplicate jobs (under progress)
