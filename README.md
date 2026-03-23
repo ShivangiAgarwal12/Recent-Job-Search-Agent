@@ -1,5 +1,18 @@
-# Recent-Job-Search-Agent
-Scraps internet to find most recent jobs posted
+## Why This Job-Search-Agent?
+
+Searching for jobs manually means opening LinkedIn, Naukri, Indeed, Glassdoor,
+and Wellfound one by one, typing the same query repeatedly, and copy-pasting
+results into a file yourself. This agent does all of that in one run, it
+searches multiple job boards simultaneously, filters results by your exact
+profile (role, skills, experience, location, job type), and saves everything
+to a file automatically. No tabs, no copy-pasting, no repetition.
+
+Unlike job aggregator websites that show you sponsored listings first or
+require you to create an account, this agent pulls raw search results directly
+and is entirely in your control. You can change the search strategy, add new
+job boards, or filter by any criteria just by editing the system prompt —
+no GUI, no subscription, no algorithm deciding what you see.
+
 # Job Search Agent 🔍
 
 An AI-powered job search agent that searches the web for job postings matching your profile and saves results to a file — **completely free to run**.
