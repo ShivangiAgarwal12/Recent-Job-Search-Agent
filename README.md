@@ -15,8 +15,7 @@ no GUI, no subscription, no algorithm deciding what you see.
 
 # Job Search Agent 🔍
 
-An AI-powered job search agent that searches the web for job postings matching your profile and saves results to a file — **completely free to run**.
-
+An AI-powered job search agent that searches the web for job postings matching your profile and saves results to a file.
 ## Stack
 
 | Component | Tool | Cost |
@@ -105,6 +104,11 @@ job-search-agent/
 - **Tool executor** — your code that actually runs each tool and returns results
 
 Once you understand this loop, you can swap in any LLM and any set of tools to build agents for any task.
+
+## Useful Resources
+- [Basic Agent Building](https://medium.com/data-science/build-a-general-purpose-ai-agent-c40be49e7400)
+- [Basics of LLM](https://web.stanford.edu/class/cs224n/)
+
 
 ## License
 
