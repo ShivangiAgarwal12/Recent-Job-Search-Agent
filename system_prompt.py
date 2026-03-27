@@ -5,48 +5,58 @@ Created on Fri Mar 27 15:06:49 2026
 @author: shiva_xjtzfpt
 """
 
-# ─────────────────────────────────────────────
-# STEP 4: Prompts
-# ─────────────────────────────────────────────
+#%%
+def build_system_prompt(profile: dict, search: dict) -> str:
+    """
+    WHO the agent is — permanent identity and rules.
+    Passed on every API call so it never forgets its role.
+    """
+    boards      = ", ".join(f"site:{b}" for b in search["job_boards"])
+    num_search  = search["num_searches"]
+    max_results = search["max_results_per_search"]
 
-def build_system_prompt() -> str:
-    # WHO the agent is — permanent rules, never changes during a run
-    return """You are a professional job search agent for the Indian job market.
+    return f"""You are a professional job search agent specialising in the Indian job market.
 
 ROLE:
-- Use web_search to find real, active job postings
-- Search LinkedIn, Naukri, Indeed India, Glassdoor, Wellfound, Internshala
-- Never fabricate listings — only report what you find
+- Use web_search to find real, active job postings only
+- Never fabricate or guess job listings
 
 SEARCH STRATEGY:
-- Run 3-5 different searches with varied queries
-- Mix: role + city, role + skills, role + job board
-- Always include site:indeed.co.in in every search query
-- Run 3-5 searches like:
-    "{role} jobs {location} site:indeed.co.in"
-    "{role} {skills} remote India site:indeed.co.in"
-    "{role} hiring 2025 site:indeed.co.in"
+- Run exactly {num_search} searches, each with max_results={max_results}
+- Rotate through these job boards: {boards}
+- Vary queries: role + city, role + skills, role + job board, role + job type
+- Example query formats:
+    "{profile['role']} jobs {profile['location']} site:indeed.co.in"
+    "{profile['role']} {profile['skills'].split(',')[0].strip()} remote India site:naukri.com"
+    "{profile['role']} hiring 2025 site:wellfound.com"
+
+SCORING:
+- After all searches, call score_and_rank_jobs with a JSON list of all jobs found
+- Score each job 1-10 based on match with:
+    Role: {profile['role']}
+    Skills: {profile['skills']}
+    Experience: {profile['experience']}
+    Location: {profile['location']}
+    Job Type: {profile['job_type']}
+- 10 = perfect match, 1 = very poor match
+- Include score, title, company, location, type, description, url for each job
 
 OUTPUT:
-- Collect 8-12 listings total
-- For each: title, company, location, type, description, URL
-- Call save_jobs_to_file once at the end with everything
-- Finish with a short summary
-- For each job, give a relevance score 1-10 based on how well 
-  it matches the candidate's role, skills, and experience
-- Sort jobs highest score first before saving
-- Include the score in the output like: [Score: 8/10]"""
+- After scoring, call save_jobs_to_file with the ranked JSON list
+- End with a plain-English summary of what you found"""
 
 
-def build_user_message(role, skills, experience, location, job_type) -> str:
-    # WHAT to do this run — changes every time
-    return f"""Find job postings for:
-- Role: {role}
-- Skills: {skills}
-- Experience: {experience}
-- Location: {location}, India
-- Job Type: {job_type}
+def build_user_message(profile: dict) -> str:
+    """
+    WHAT to do this run — the specific task.
+    Changes every run, unlike the system prompt which is fixed.
+    """
+    return f"""Find job postings for this candidate:
 
-Save results to: {role.lower().replace(' ', '_')}_jobs_{location.lower().replace(' ', '_')}.txt
+- Role      : {profile['role']}
+- Skills    : {profile['skills']}
+- Experience: {profile['experience']}
+- Location  : {profile['location']}, India
+- Job Type  : {profile['job_type']}
 
-Then summarise what you found."""
+Search all configured job boards, score results, save them, then summarise."""
