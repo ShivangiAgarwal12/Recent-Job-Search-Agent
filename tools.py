@@ -5,19 +5,24 @@ Created on Fri Mar 27 15:05:35 2026
 @author: shiva_xjtzfpt
 """
 
-#%%
 """
+tools.py
+---------
 All tool definitions and the execute_tool() dispatcher.
 
-Two kinds of things live here:
-1. Tool STUBS — empty Python functions that Gemini reads to understand
-   what tools exist and what arguments they take. The docstrings and
-   type hints are what Gemini uses to build the schema automatically.
+FIX for 0 jobs collected:
+--------------------------
+The old approach relied on Gemini to pass jobs as a JSON string
+to score_and_rank_jobs. This was fragile — Gemini often summarised
+results in plain text instead of structured JSON, so _collected_jobs
+stayed empty.
 
-2. execute_tool() — the real logic dispatcher. When Gemini calls a tool,
-   this function runs the actual code and returns the result.
+The fix: jobs are captured DIRECTLY inside the web_search executor
+the moment a search runs. We don't wait for Gemini to pass them back.
+Gemini still sees a clean text summary of results, but we've already
+stored the raw structured data ourselves.
 """
-#%%
+
 import json
 import time
 
@@ -29,7 +34,9 @@ from retry import safe_call
 
 
 # ─────────────────────────────────────────────
-# TOOL STUBS (Gemini reads these)
+# TOOL STUBS
+# Gemini reads these to understand what tools
+# exist and what arguments they take.
 # Bodies are empty — real logic is in execute_tool()
 # ─────────────────────────────────────────────
 
@@ -45,59 +52,52 @@ def web_search(query: str, max_results: int = 8) -> str:
     pass
 
 
-def score_and_rank_jobs(jobs_json: str) -> str:
-    """Score each job listing 1-10 based on how well it matches the candidate profile.
-    Sort results highest score first. Call this once after all searches are done.
-
-    Args:
-        jobs_json: A JSON string containing a list of job dicts with keys:
-                   title, company, location, type, description, url
+def finish_and_save() -> str:
+    """Call this tool once you have completed all searches.
+    It will score, rank, and save all collected jobs automatically.
+    No arguments needed.
     """
     pass
 
 
-def save_jobs_to_file(jobs_json: str, filename: str) -> str:
-    """Save the final scored and ranked list of jobs. Call this ONCE at the end.
-
-    Args:
-        jobs_json: JSON string of the final ranked job list.
-        filename: Base filename e.g. react_jobs_bengaluru
-    """
-    pass
-
-
-# Export stubs for Gemini
-TOOL_DEFINITIONS = [web_search, score_and_rank_jobs, save_jobs_to_file]
+TOOL_DEFINITIONS = [web_search, finish_and_save]
 
 
 # ─────────────────────────────────────────────
-# TOOL EXECUTOR
-# Real logic runs here. Returns a string result
-# which Gemini reads to decide what to do next.
+# SHARED STATE
+# Jobs are collected here directly during
+# web_search execution — not passed via Gemini.
 # ─────────────────────────────────────────────
 
-# Shared state for this run — populated by execute_tool calls
-_collected_jobs = []
+_collected_jobs = []   # raw jobs built up across all searches
 _seen_urls      = set()
-_delay          = 4     # seconds between searches, set by agent.py
+_delay          = 4
+_profile        = {}   # injected by agent.py for scoring
 
 
 def set_seen_urls(seen: set):
-    """Called by agent.py to inject memory before the run starts."""
     global _seen_urls
     _seen_urls = seen
 
 
 def set_delay(delay: int):
-    """Called by agent.py to inject search delay from config."""
     global _delay
     _delay = delay
 
 
+def set_profile(profile: dict):
+    """Injected by agent.py so execute_tool can score against the profile."""
+    global _profile
+    _profile = profile
+
+
 def get_collected_jobs() -> list:
-    """Called by agent.py to retrieve results after the run."""
     return _collected_jobs
 
+
+# ─────────────────────────────────────────────
+# TOOL EXECUTOR
+# ─────────────────────────────────────────────
 
 def execute_tool(tool_name: str, tool_input: dict) -> str:
     global _collected_jobs
@@ -107,7 +107,7 @@ def execute_tool(tool_name: str, tool_input: dict) -> str:
         query       = tool_input.get("query", "")
         max_results = int(tool_input.get("max_results", 8))
 
-        logger.info(f"web_search: {query}")
+        logger.info(f"Searching: {query}")
 
         def _search():
             results = []
@@ -119,57 +119,136 @@ def execute_tool(tool_name: str, tool_input: dict) -> str:
         try:
             raw = safe_call(_search, retries=3, delay=5)
         except Exception as e:
-            return f"Search failed after retries: {e}"
+            return f"Search failed: {e}"
 
         if not raw:
             return "No results found. Try a different query."
 
-        formatted = f"Results for '{query}':\n\n"
-        for i, r in enumerate(raw, 1):
-            url = r.get("href", "")
-            # Skip if already seen
+        new_jobs_this_search = 0
+        summary = f"Results for '{query}':\n\n"
+
+        for r in raw:
+            url   = r.get("href", "")
+            title = r.get("title", "")
+            body  = r.get("body", "")
+
+            # Skip already seen jobs (memory check)
             if not is_new_job(url, _seen_urls):
                 continue
-            formatted += f"{i}. {r.get('title', '')}\n"
-            formatted += f"   URL : {url}\n"
-            formatted += f"   Info: {r.get('body', '')[:300]}\n\n"
 
-        # Delay to respect free tier rate limits
+            # ── KEY FIX ──────────────────────────────────
+            # Capture the job directly into _collected_jobs
+            # right here — don't rely on Gemini to pass it back
+            # ─────────────────────────────────────────────
+            job = {
+                "title":       title,
+                "company":     _extract_company(title, body),
+                "location":    _extract_location(body, query),
+                "type":        _extract_type(body),
+                "description": body[:300],
+                "url":         url,
+                "score":       0    # scored later in finish_and_save
+            }
+            _collected_jobs.append(job)
+            _seen_urls.add(url)
+            new_jobs_this_search += 1
+
+            # Give Gemini a readable summary (for its reasoning)
+            summary += f"- {title}\n  {url}\n  {body[:150]}\n\n"
+
+        logger.info(f"Captured {new_jobs_this_search} new jobs. Total so far: {len(_collected_jobs)}")
         time.sleep(_delay)
-        return formatted if formatted.strip() else "All results already seen. Try a different query."
 
-    # ── score_and_rank_jobs ─────────────────────
-    if tool_name == "score_and_rank_jobs":
-        try:
-            jobs = json.loads(tool_input.get("jobs_json", "[]"))
-        except json.JSONDecodeError:
-            return "Error: jobs_json was not valid JSON."
+        return summary + f"\n[{new_jobs_this_search} new jobs captured. Total collected: {len(_collected_jobs)}]"
 
-        if not jobs:
-            return "No jobs to score."
+    # ── finish_and_save ─────────────────────────
+    if tool_name == "finish_and_save":
+        if not _collected_jobs:
+            return "No jobs were collected during the searches."
 
-        # Store scored jobs for later retrieval
-        _collected_jobs = sorted(jobs, key=lambda j: j.get("score", 0), reverse=True)
+        # Score each job against the profile
+        _score_jobs(_collected_jobs, _profile)
 
-        summary = f"Scored and ranked {len(_collected_jobs)} jobs.\n"
-        for j in _collected_jobs[:3]:
-            summary += f"  [{j.get('score','?')}/10] {j.get('title','?')} at {j.get('company','?')}\n"
+        # Sort highest score first
+        _collected_jobs.sort(key=lambda j: j.get("score", 0), reverse=True)
+
+        top = _collected_jobs[:3]
+        summary = f"Done. Scored and ranked {len(_collected_jobs)} jobs.\nTop results:\n"
+        for j in top:
+            summary += f"  [{j['score']}/10] {j['title']} at {j['company']}\n"
 
         return summary
 
-    # ── save_jobs_to_file ───────────────────────
-    if tool_name == "save_jobs_to_file":
-        # Signal to agent.py that saving should happen
-        # Actual file writing is done by output.py after the loop
-        # This tool just confirms to Gemini that the task is done
-        jobs_json = tool_input.get("jobs_json", "[]")
-        try:
-            jobs = json.loads(jobs_json)
-            if jobs:
-                _collected_jobs = jobs
-        except json.JSONDecodeError:
-            pass
-
-        return f"Ready to save {len(_collected_jobs)} jobs. Files will be written now."
-
     return f"Unknown tool: {tool_name}"
+
+
+# ─────────────────────────────────────────────
+# HELPERS
+# ─────────────────────────────────────────────
+
+def _extract_company(title: str, body: str) -> str:
+    """Try to pull company name from the result text."""
+    # DuckDuckGo often puts "Company Name - Job Title" in the title
+    if " - " in title:
+        parts = title.split(" - ")
+        if len(parts) >= 2:
+            return parts[-1].strip()
+    if " at " in title.lower():
+        return title.lower().split(" at ")[-1].strip().title()
+    return "—"
+
+
+def _extract_location(body: str, query: str) -> str:
+    """Try to extract city from body or fall back to query location."""
+    cities = ["Bengaluru", "Mumbai", "Delhi", "Hyderabad", "Pune",
+              "Chennai", "Gurgaon", "Noida", "Kolkata", "Ahmedabad"]
+    for city in cities:
+        if city.lower() in body.lower():
+            return f"{city}, India"
+    return "India"
+
+
+def _extract_type(body: str) -> str:
+    """Detect job type from body text."""
+    body_lower = body.lower()
+    if "remote" in body_lower:
+        return "Remote"
+    if "hybrid" in body_lower:
+        return "Hybrid"
+    return "On-site"
+
+
+def _score_jobs(jobs: list, profile: dict):
+    """
+    Simple keyword-based scoring against the profile.
+    Each job gets a score 1-10 written directly into the dict.
+    """
+    if not profile:
+        for job in jobs:
+            job["score"] = 5
+        return
+
+    role   = profile.get("role", "").lower()
+    skills = [s.strip().lower() for s in profile.get("skills", "").split(",")]
+    jtype  = profile.get("job_type", "").lower()
+
+    for job in jobs:
+        text  = (job.get("title", "") + " " + job.get("description", "")).lower()
+        score = 0
+
+        # Role match (up to 4 points)
+        role_words = role.split()
+        matches    = sum(1 for w in role_words if w in text)
+        score     += min(4, int((matches / max(len(role_words), 1)) * 4))
+
+        # Skills match (up to 4 points)
+        skill_hits = sum(1 for s in skills if s in text)
+        score     += min(4, int((skill_hits / max(len(skills), 1)) * 4))
+
+        # Job type match (1 point)
+        if jtype and jtype != "any":
+            if jtype in job.get("type", "").lower():
+                score += 1
+
+        # Clamp between 1 and 10
+        job["score"] = max(1, min(10, score + 1))

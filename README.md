@@ -19,13 +19,14 @@ An AI-powered job search agent that searches the web for job postings matching y
 
 
 ### Features
-
-- Runs **3–5 varied searches** to maximise result diversity
-- **Scores each job 1–10** based on how well it matches your profile
-- Filters and shows **only top-scoring listings** first
-- Saves all results to a local `.txt` file automatically
-- Adds a short delay between searches to stay within free API limits
-- Prints exact file save path so you always know where results are
+- **Multi-board search** — searches Indeed, Naukri, Wellfound (configurable in `config.json`)
+- **AI scoring** — every job is scored 1–10 based on match with your profile
+- **Deduplication** — never shows the same job twice across multiple runs
+- **Multiple output formats** — saves as `.txt`, `.csv` (Excel), and `.json`
+- **Email results** — optionally emails the job list to yourself automatically
+- **Retry logic** — handles rate limits and network errors without crashing
+- **Full logging** — every run recorded in `agent.log` with timestamps
+- **Config-driven** — change everything from `config.json`, never touch the code
 
 
 ### Building Features (In Progress)
@@ -34,12 +35,14 @@ An AI-powered job search agent that searches the web for job postings matching y
  - More to follow .. 
 
 ## Stack
-
+ 
 | Component | Tool | Cost |
 |---|---|---|
 | LLM | Google Gemini 2.5 Flash Lite | Free (1000 req/day) |
 | Web Search | DDGS (DuckDuckGo) | Free, no API key |
-| Output | Local `.txt` file | — |
+| Output | `.txt` `.csv` `.json` | — |
+| Memory | `jobs_seen.json` (local) | — |
+
 
 ## How It Works
 
@@ -102,13 +105,28 @@ data_scientist_jobs_bengaluru.txt
 ```
 
 ## Project Structure
+ 
 ```
 job-search-agent/
-├── agent.py          # main agent script
-├── tools.py          # tools 
-├── system_prompt.py  # system prompt to return the functionalities
-├── README.md         # this file
-└── .gitignore        # keeps your API key off GitHub
+├── agent.py            # main entry point — agent loop
+├── config.json         # all settings — edit this, not the code
+├── config_loader.py    # reads and validates config.json
+├── tools.py            # tool definitions + execute_tool() dispatcher
+├── system_prompt.py    # identity and rules for agents
+├── memory.py           # tracks seen jobs across runs
+├── retry.py            # safe wrapper with automatic retry
+├── output.py           # saves txt, csv, json + sends email
+├── logger.py           # centralised logging
+├── README.md           # this file
+├── .gitignore          # keeps keys and output off GitHub
+│
+├── output/             # created automatically on first run
+│   ├── react_jobs_bengaluru_20250115_1432.txt
+│   ├── react_jobs_bengaluru_20250115_1432.csv
+│   └── react_jobs_bengaluru_20250115_1432.json
+│
+├── jobs_seen.json      # agent memory — created automatically
+└── agent.log           # run history — created automatically
 ```
 
 

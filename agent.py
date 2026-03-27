@@ -1,221 +1,160 @@
 # -*- coding: utf-8 -*-
 
+
+
 """
-Job Search Agent — 100% Free Stack
-====================================
-LLM    : Google Gemini 1.5 Flash  (1500 free requests/day — no credit card)
-Search : DuckDuckGo               (completely free — no API key needed)
-Save   : Local .txt file
+agent.py
+---------
+Main entry point for the Job Search Agent.
 
-Install:
-  pip install google-generativeai duckduckgo-search
-
-Free Gemini key (no credit card): https://aistudio.google.com
-
-Set your key — either paste it directly below, or set as env variable:
-  Linux/Mac:  export GEMINI_API_KEY=your_key_here
-  Windows:    set GEMINI_API_KEY=your_key_here
+Modular structure:
+  config.json       — all settings (profile, boards, output, email)
+  config_loader.py  — reads config.json
+  logger.py         — centralised logging to terminal + agent.log
+  memory.py         — tracks seen jobs across runs (jobs_seen.json)
+  retry.py          — safe wrapper with automatic retry on failure
+  tools.py          — tool definitions + execute_tool() dispatcher
+  system_prompt.py  — identity and rules for agents
+  output.py         — saves results as .txt, .csv, .json + email
 
 Run:
-  python job_search_agent_free.py
+  python agent.py
 """
 #%%
 import os
-from datetime import datetime
-
 import google.generativeai as genai
 import google.ai.generativelanguage as glm
-# from duckduckgo_search import DDGS
-from ddgs import DDGS
+
+from config_loader import load_config, get_profile, get_search_settings, get_output_settings, get_email_settings
+from logger        import logger
+from memory        import load_seen_jobs, save_seen_jobs, mark_as_seen
+from output        import save_all, send_email
+from retry         import safe_call
+from tools         import TOOL_DEFINITIONS, execute_tool, set_seen_urls, set_delay, set_profile, get_collected_jobs
+from system_prompt import build_system_prompt, build_user_message
+#%%
 os.environ["GEMINI_API_KEY"] = "Your Key Here"
 
-from tools import *
-from system_prompt import *
-
 #%%
-# Pass the function OBJECTS (not dicts) — Gemini parses them automatically
-TOOLS = [web_search, save_jobs_to_file]
-
-
-# ─────────────────────────────────────────────
-# STEP 2: Tool executor
-#
-# When Gemini calls a tool, it returns the name
-# + arguments. This function runs the real logic
-# and returns a result string back to the LLM.
-# ─────────────────────────────────────────────
-
-def execute_tool(tool_name: str, tool_input: dict) -> str:
-
-    # ── web_search: call DuckDuckGo ────────────
-    if tool_name == "web_search":
-        query       = tool_input.get("query", "")
-        max_results = int(tool_input.get("max_results", 10))
-
-        print(f"    Searching: {query}")
-
-        try:
-            results = []
-            with DDGS() as ddgs:
-                for r in ddgs.text(query, max_results=max_results):
-                    results.append({
-                        "title": r.get("title", ""),
-                        "url":   r.get("href", ""),
-                        "body":  r.get("body", "")[:300]
-                    })
-
-            if not results:
-                return "No results found. Try a different search query."
-
-            formatted = f"Results for '{query}':\n\n"
-            for i, r in enumerate(results, 1):
-                formatted += f"{i}. {r['title']}\n"
-                formatted += f"   URL: {r['url']}\n"
-                formatted += f"   {r['body']}\n\n"
-
-            return formatted
-
-        except Exception as e:
-            return f"Search error: {str(e)}. Try a simpler query."
-
-    # ── save_jobs_to_file: write to disk ────────
-    if tool_name == "save_jobs_to_file":
-        filename = tool_input.get("filename", "jobs.txt")
-        content  = tool_input.get("content", "")
-
-        filename = filename.replace("/", "_").replace("\\", "_")
-        if not filename.endswith(".txt"):
-            filename += ".txt"
-
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write("Job Search Results\n")
-            f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write("=" * 60 + "\n\n")
-            f.write(content)
-            print(f"\n  ✓ File saved: {os.path.abspath(filename)}")
-
-        return f"Saved {len(content)} characters to '{filename}'"
-
-    return f"Unknown tool: {tool_name}"
-
-
-# ─────────────────────────────────────────────
-# STEP 3: Agent loop
-#
-# Identical logic to the Claude version:
-#   1. Send message to LLM
-#   2. Tool call? → execute → send result back → repeat
-#   3. No tool call? → LLM is done, return text
-#
-# Only the API syntax is different:
-#   Claude → response.stop_reason == "tool_use"
-#   Gemini → part.function_call in response.parts
-# ─────────────────────────────────────────────
-
-def run_agent(system_prompt: str, user_message: str, verbose: bool = True) -> str:
-
+def run_agent(system_prompt: str, user_message: str) -> str:
     genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-
+ 
     model = genai.GenerativeModel(
         model_name="gemini-2.5-flash-lite",
-        system_instruction=system_prompt,   # <- system prompt (agent identity)
-        tools=TOOLS,
+        system_instruction=system_prompt,
+        tools=TOOL_DEFINITIONS,
     )
-
-    # enable_automatic_function_calling=False → WE control the loop
+ 
     chat = model.start_chat(enable_automatic_function_calling=False)
-
-    step = 0
+ 
+    step            = 0
     message_to_send = user_message
-
+ 
     while True:
         step += 1
-        if verbose:
-            print(f"\n[Step {step}] Calling Gemini...")
-
-        response = chat.send_message(message_to_send)
-
-        # Each response has "parts" — text parts or function_call parts
+        logger.info(f"[Step {step}] Calling Gemini...")
+ 
+        def _call():
+            return chat.send_message(message_to_send)
+ 
+        response = safe_call(_call, retries=3, delay=10)
+ 
         function_calls_found = []
-
+ 
         for part in response.parts:
-            if part.text and verbose:
-                print(f"  Gemini: {part.text[:200]}")
+            if part.text:
+                logger.info(f"Gemini: {part.text[:200]}")
             if part.function_call:
                 function_calls_found.append(part.function_call)
-                if verbose:
-                    print(f"  -> Tool: {part.function_call.name}({dict(part.function_call.args)})")
-
-        # No tool calls → LLM is done
+                logger.info(f"Tool: {part.function_call.name}({dict(part.function_call.args)})")
+ 
+        # No tool calls → agent is done
         if not function_calls_found:
-            if verbose:
-                print("\n[Done]")
+            logger.info("[Done] Agent finished.")
             return "".join(p.text for p in response.parts if p.text)
-
-        # Tool calls found → execute each one, collect results
+ 
+        # Execute tools and collect results
         response_parts = []
-
+ 
         for fc in function_calls_found:
             result = execute_tool(fc.name, dict(fc.args))
-            if verbose:
-                print(f"  Result: {result[:120]}...")
-
-            # Gemini's equivalent of Claude's "tool_result" block
+            logger.info(f"Result: {result[:150]}")
+ 
             response_parts.append(
                 glm.Part(
                     function_response=glm.FunctionResponse(
                         name=fc.name,
-                        response={"result": result}   # must be a dict
+                        response={"result": result}
                     )
                 )
             )
-
-        # Send all results back — LLM reads them and continues
+ 
         message_to_send = glm.Content(parts=response_parts)
-
-        if step > 20:
-            print("[Warning] Step limit reached.")
+ 
+        if step > 25:
+            logger.warning("Step limit reached.")
             break
-
+ 
     return "Agent stopped."
-
-
-
-
-
+ 
+ 
 # ─────────────────────────────────────────────
-# STEP 5: Main
+# MAIN
 # ─────────────────────────────────────────────
-
+ 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("  Job Search Agent  [Gemini 1.5 Flash + DuckDuckGo — Free]")
-    print("=" * 60)
-
+    logger.info("=" * 60)
+    logger.info("Job Search Agent  [Gemini 2.5 Flash Lite + DuckDuckGo]")
+    logger.info("=" * 60)
+ 
     if not os.environ.get("GEMINI_API_KEY"):
-        print("\n  GEMINI_API_KEY not set.")
-        print("  Get free key: https://aistudio.google.com")
-        print("  Then: export GEMINI_API_KEY=your_key\n")
+        logger.error("GEMINI_API_KEY not set.")
         exit(1)
-
-    print("\nEnter your profile (Enter = use default):\n")
-    role       = input("Job Role       [React Developer]      : ").strip() or "React Developer"
-    skills     = input("Key Skills     [React, Node.js]       : ").strip() or "React, Node.js, TypeScript"
-    experience = input("Experience     [3-5 years]            : ").strip() or "3-5 years"
-    location   = input("City in India  [Bengaluru]            : ").strip() or "Bengaluru"
-    job_type   = input("Job Type       [Remote/Hybrid/Any]    : ").strip() or "Any"
-
-    print("\n" + "-" * 60)
-    print("Starting agent...\n")
-
-    final = run_agent(
-        build_system_prompt(),
-        build_user_message(role, skills, experience, location, job_type),
-        verbose=True
+ 
+    # Load config
+    config  = load_config("config.json")
+    profile = get_profile(config)
+    search  = get_search_settings(config)
+    output  = get_output_settings(config)
+    email   = get_email_settings(config)
+ 
+    logger.info(f"Role: {profile['role']} | Location: {profile['location']}")
+    logger.info(f"Boards: {search['job_boards']}")
+ 
+    # Load memory and inject into tools
+    seen_urls = load_seen_jobs()
+    set_seen_urls(seen_urls)
+    set_delay(search.get("delay_between_searches", 4))
+    set_profile(profile)   # ← injected so tools.py can score jobs
+ 
+    # Run agent
+    final_answer = run_agent(
+        build_system_prompt(profile, search),
+        build_user_message(profile)
     )
-
-    print("\n" + "=" * 60)
-    print("FINAL RESPONSE:")
-    print("=" * 60)
-    print(final)
-    print("\nCheck your folder for the .txt file!")
+ 
+    # Retrieve what was collected
+    jobs = get_collected_jobs()
+    logger.info(f"Jobs collected: {len(jobs)}")
+ 
+    if jobs:
+        # Save in all configured formats
+        saved_files = save_all(jobs, profile, output["formats"], output["folder"])
+ 
+        # Print where files landed
+        for fmt, path in saved_files.items():
+            print(f"  Saved {fmt.upper()}: {path}")
+ 
+        # Update memory
+        for job in jobs:
+            seen_urls.add(job.get("url", ""))
+        save_seen_jobs(seen_urls)
+ 
+        # Email if enabled
+        send_email(jobs, profile, email, saved_files)
+ 
+    else:
+        logger.warning("No jobs collected. Check agent.log for details.")
+ 
+    print(f"\n{final_answer}")
+    logger.info("Done.")

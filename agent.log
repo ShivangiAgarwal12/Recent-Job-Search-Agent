@@ -1,0 +1,219 @@
+2026-03-27 15:44:10 | INFO     | ============================================================
+2026-03-27 15:44:10 | INFO     |   Job Search Agent  [Gemini + DuckDuckGo — Free]
+2026-03-27 15:44:10 | INFO     | ============================================================
+2026-03-27 15:44:58 | INFO     | ============================================================
+2026-03-27 15:44:58 | INFO     |   Job Search Agent  [Gemini + DuckDuckGo — Free]
+2026-03-27 15:44:58 | INFO     | ============================================================
+2026-03-27 15:45:56 | INFO     | ============================================================
+2026-03-27 15:45:56 | INFO     |   Job Search Agent  [Gemini + DuckDuckGo — Free]
+2026-03-27 15:45:56 | INFO     | ============================================================
+2026-03-27 15:45:56 | INFO     | Profile loaded: React Developer in Bengaluru
+2026-03-27 15:45:56 | INFO     | Job boards: ['indeed.co.in', 'naukri.com', 'wellfound.com']
+2026-03-27 15:45:56 | INFO     | No memory file found — starting fresh.
+2026-03-27 15:45:57 | INFO     | [Step 1] Calling Gemini...
+2026-03-27 15:45:58 | INFO     | Tool call: web_search({'query': 'React Developer jobs Bengaluru site:indeed.co.in'})
+2026-03-27 15:45:58 | INFO     | Tool call: web_search({'query': 'React Developer Node.js TypeScript remote India site:naukri.com'})
+2026-03-27 15:45:58 | INFO     | Tool call: web_search({'query': 'React Developer jobs remote site:wellfound.com'})
+2026-03-27 15:45:58 | INFO     | Tool call: web_search({'query': 'React Developer jobs 3-5 years experience Bengaluru remote site:indeed.co.in'})
+2026-03-27 15:45:58 | INFO     | web_search: React Developer jobs Bengaluru site:indeed.co.in
+2026-03-27 15:46:04 | INFO     | Tool result: Results for 'React Developer jobs Bengaluru site:indeed.co.in':
+
+1. Fresher React Native Developer Salaries in India | Indeed.co.in
+   URL : https://w
+2026-03-27 15:46:04 | INFO     | web_search: React Developer Node.js TypeScript remote India site:naukri.com
+2026-03-27 15:46:10 | INFO     | Tool result: Results for 'React Developer Node.js TypeScript remote India site:naukri.com':
+
+1. React Developer Jobs - 24334 React Developer Job Vacancies In March
+2026-03-27 15:46:10 | INFO     | web_search: React Developer jobs remote site:wellfound.com
+2026-03-27 15:46:16 | INFO     | Tool result: Results for 'React Developer jobs remote site:wellfound.com':
+
+1. Remote React Developer Jobs in 2026 | Wellfound
+   URL : https://wellfound.com/role/
+2026-03-27 15:46:16 | INFO     | web_search: React Developer jobs 3-5 years experience Bengaluru remote site:indeed.co.in
+2026-03-27 15:46:22 | INFO     | Tool result: Results for 'React Developer jobs 3-5 years experience Bengaluru remote site:indeed.co.in':
+
+1. Job Search India | Indeed
+   URL : https://www.indeed.
+2026-03-27 15:46:22 | INFO     | [Step 2] Calling Gemini...
+2026-03-27 15:46:26 | ERROR    | Unexpected error (attempt 1/3): finish_reason: MALFORMED_FUNCTION_CALL
+index: 0
+. Retrying in 10s...
+2026-03-27 15:46:36 | INFO     | [Done] Agent finished.
+2026-03-27 15:46:36 | INFO     | Agent found 0 jobs total.
+2026-03-27 15:46:36 | WARNING  | No jobs collected — nothing to save.
+2026-03-27 15:46:36 | INFO     | ============================================================
+2026-03-27 15:46:36 | INFO     | AGENT SUMMARY:
+2026-03-27 15:46:36 | INFO     | ============================================================
+2026-03-27 15:46:36 | INFO     | Done. Check the output/ folder for your results.
+2026-03-27 15:47:40 | INFO     | ============================================================
+2026-03-27 15:47:40 | INFO     |   Job Search Agent  [Gemini + DuckDuckGo — Free]
+2026-03-27 15:47:40 | INFO     | ============================================================
+2026-03-27 15:47:40 | INFO     | Profile loaded: AI Research Scientist in Bengaluru
+2026-03-27 15:47:40 | INFO     | Job boards: ['indeed.co.in', 'naukri.com', 'wellfound.com']
+2026-03-27 15:47:40 | INFO     | No memory file found — starting fresh.
+2026-03-27 15:47:40 | INFO     | [Step 1] Calling Gemini...
+2026-03-27 15:47:41 | INFO     | Tool call: web_search({'query': 'AI Research Scientist jobs Bengaluru site:indeed.co.in'})
+2026-03-27 15:47:41 | INFO     | Tool call: web_search({'query': 'AI Research Scientist Python LLM RL remote India site:naukri.com'})
+2026-03-27 15:47:41 | INFO     | Tool call: web_search({'query': 'AI Research Scientist jobs remote site:wellfound.com'})
+2026-03-27 15:47:41 | INFO     | Tool call: web_search({'query': 'Entry level AI Research Scientist jobs Bengaluru India site:indeed.co.in'})
+2026-03-27 15:47:41 | INFO     | web_search: AI Research Scientist jobs Bengaluru site:indeed.co.in
+2026-03-27 15:47:49 | INFO     | Tool result: Results for 'AI Research Scientist jobs Bengaluru site:indeed.co.in':
+
+1. Mathematician Salaries in India | Indeed.co.in
+   URL : https://www.indeed.c
+2026-03-27 15:47:49 | INFO     | web_search: AI Research Scientist Python LLM RL remote India site:naukri.com
+2026-03-27 15:47:56 | INFO     | Tool result: Results for 'AI Research Scientist Python LLM RL remote India site:naukri.com':
+
+1. naukri.com
+   URL : https://www.naukri.com/
+   Info: Search Jobs i
+2026-03-27 15:47:56 | INFO     | web_search: AI Research Scientist jobs remote site:wellfound.com
+2026-03-27 15:48:02 | INFO     | Tool result: Results for 'AI Research Scientist jobs remote site:wellfound.com':
+
+1. wellfound.com/jobs
+   URL : https://wellfound.com/jobs
+   Info: The site owner
+2026-03-27 15:48:02 | INFO     | web_search: Entry level AI Research Scientist jobs Bengaluru India site:indeed.co.in
+2026-03-27 15:48:10 | INFO     | Tool result: Results for 'Entry level AI Research Scientist jobs Bengaluru India site:indeed.co.in':
+
+1. Estimated Concierge Salaries inBengaluru, Karnataka | Inde
+2026-03-27 15:48:10 | INFO     | [Step 2] Calling Gemini...
+2026-03-27 15:48:10 | INFO     | [Done] Agent finished.
+2026-03-27 15:48:10 | INFO     | Agent found 0 jobs total.
+2026-03-27 15:48:10 | WARNING  | No jobs collected — nothing to save.
+2026-03-27 15:48:10 | INFO     | ============================================================
+2026-03-27 15:48:10 | INFO     | AGENT SUMMARY:
+2026-03-27 15:48:10 | INFO     | ============================================================
+2026-03-27 15:48:10 | INFO     | Done. Check the output/ folder for your results.
+2026-03-27 16:03:03 | INFO     | ============================================================
+2026-03-27 16:03:03 | INFO     |   Job Search Agent  [Gemini + DuckDuckGo — Free]
+2026-03-27 16:03:03 | INFO     | ============================================================
+2026-03-27 16:03:03 | INFO     | Profile loaded: AI Research Scientist in Bengaluru
+2026-03-27 16:03:03 | INFO     | Job boards: ['indeed.co.in', 'naukri.com', 'wellfound.com']
+2026-03-27 16:03:03 | INFO     | No memory file found — starting fresh.
+2026-03-27 16:03:03 | INFO     | [Step 1] Calling Gemini...
+2026-03-27 16:03:04 | INFO     | Tool call: web_search({'query': 'AI Research Scientist jobs Bengaluru site:indeed.co.in'})
+2026-03-27 16:03:04 | INFO     | Tool call: web_search({'query': 'AI Research Scientist Python LLM remote India site:naukri.com'})
+2026-03-27 16:03:04 | INFO     | Tool call: web_search({'query': 'AI Research Scientist hiring 2025 site:wellfound.com'})
+2026-03-27 16:03:04 | INFO     | Tool call: web_search({'query': 'AI Research Scientist entry level Bengaluru site:indeed.co.in'})
+2026-03-27 16:03:04 | INFO     | web_search: AI Research Scientist jobs Bengaluru site:indeed.co.in
+2026-03-27 16:03:12 | INFO     | Tool result: Results for 'AI Research Scientist jobs Bengaluru site:indeed.co.in':
+
+1. Estimated Avionics Engineer Salaries inBengaluru... | Indeed.co.in
+   URL : 
+2026-03-27 16:03:12 | INFO     | web_search: AI Research Scientist Python LLM remote India site:naukri.com
+2026-03-27 16:03:20 | INFO     | Tool result: Results for 'AI Research Scientist Python LLM remote India site:naukri.com':
+
+1. Top 21 Highest Paying Jobs in India for Freshers (2025)
+   URL : http
+2026-03-27 16:03:20 | INFO     | web_search: AI Research Scientist hiring 2025 site:wellfound.com
+2026-03-27 16:03:27 | INFO     | Tool result: Results for 'AI Research Scientist hiring 2025 site:wellfound.com':
+
+1. wellfound.com
+   URL : http://wellfound.com/
+   Info: how US startups secure f
+2026-03-27 16:03:27 | INFO     | web_search: AI Research Scientist entry level Bengaluru site:indeed.co.in
+2026-03-27 16:03:34 | INFO     | Tool result: Results for 'AI Research Scientist entry level Bengaluru site:indeed.co.in':
+
+1. Mathematician Salaries in India | Indeed.co.in
+   URL : https://www.i
+2026-03-27 16:03:34 | INFO     | [Step 2] Calling Gemini...
+2026-03-27 16:03:35 | INFO     | [Done] Agent finished.
+2026-03-27 16:03:35 | INFO     | Agent found 0 jobs total.
+2026-03-27 16:03:35 | WARNING  | No jobs collected — nothing to save.
+2026-03-27 16:03:35 | INFO     | ============================================================
+2026-03-27 16:03:35 | INFO     | AGENT SUMMARY:
+2026-03-27 16:03:35 | INFO     | ============================================================
+2026-03-27 16:03:35 | INFO     | Done. Check the output/ folder for your results.
+2026-03-27 16:06:04 | INFO     | ============================================================
+2026-03-27 16:06:04 | INFO     |   Job Search Agent  [Gemini + DuckDuckGo — Free]
+2026-03-27 16:06:04 | INFO     | ============================================================
+2026-03-27 16:06:04 | INFO     | Profile loaded: AI Research Scientist in Bengaluru
+2026-03-27 16:06:04 | INFO     | Job boards: ['indeed.co.in', 'naukri.com', 'wellfound.com']
+2026-03-27 16:06:04 | INFO     | No memory file found — starting fresh.
+2026-03-27 16:06:04 | INFO     | [Step 1] Calling Gemini...
+2026-03-27 16:06:05 | INFO     | Tool call: web_search({'query': 'AI Research Scientist Python LLM Bengaluru site:indeed.co.in', 'max_results': 10.0})
+2026-03-27 16:06:05 | INFO     | Tool call: web_search({'query': 'AI Research Scientist Python RL remote India site:naukri.com', 'max_results': 10.0})
+2026-03-27 16:06:05 | INFO     | Tool call: web_search({'query': 'AI Research Scientist Bengaluru site:wellfound.com', 'max_results': 10.0})
+2026-03-27 16:06:05 | INFO     | Tool call: web_search({'query': 'Junior AI Scientist Python Bengaluru site:indeed.co.in', 'max_results': 10.0})
+2026-03-27 16:06:05 | INFO     | web_search: AI Research Scientist Python LLM Bengaluru site:indeed.co.in
+2026-03-27 16:06:12 | INFO     | Tool result: Results for 'AI Research Scientist Python LLM Bengaluru site:indeed.co.in':
+
+1. Estimated Vice President of Information Technology... | Indeed.co.in
+ 
+2026-03-27 16:06:12 | INFO     | web_search: AI Research Scientist Python RL remote India site:naukri.com
+2026-03-27 16:06:21 | INFO     | Tool result: Results for 'AI Research Scientist Python RL remote India site:naukri.com':
+
+1. naukri.com
+   URL : https://www.naukri.com/
+   Info: Jobs - Jobs inInd
+2026-03-27 16:06:21 | INFO     | web_search: AI Research Scientist Bengaluru site:wellfound.com
+2026-03-27 16:06:29 | INFO     | Tool result: Results for 'AI Research Scientist Bengaluru site:wellfound.com':
+
+1. Page 6:BengaluruJobs - Tech & Startup Jobs | Wellfound...
+   URL : https://wellf
+2026-03-27 16:06:29 | INFO     | web_search: Junior AI Scientist Python Bengaluru site:indeed.co.in
+2026-03-27 16:06:36 | INFO     | Tool result: Results for 'Junior AI Scientist Python Bengaluru site:indeed.co.in':
+
+1. Mathematician Salaries in India | Indeed.co.in
+   URL : https://www.indeed.c
+2026-03-27 16:06:36 | INFO     | [Step 2] Calling Gemini...
+2026-03-27 16:06:36 | INFO     | [Done] Agent finished.
+2026-03-27 16:06:36 | INFO     | Agent found 0 jobs total.
+2026-03-27 16:06:36 | INFO     | Agent found 0 jobs total.
+2026-03-27 16:06:36 | WARNING  | No jobs collected — nothing to save.
+2026-03-27 16:06:36 | INFO     | ============================================================
+2026-03-27 16:06:36 | INFO     | AGENT SUMMARY:
+2026-03-27 16:06:36 | INFO     | ============================================================
+2026-03-27 16:06:36 | INFO     | Done. Check the output/ folder for your results.
+2026-03-27 16:11:37 | INFO     | ============================================================
+2026-03-27 16:11:37 | INFO     | Job Search Agent  [Gemini 2.5 Flash Lite + DuckDuckGo]
+2026-03-27 16:11:37 | INFO     | ============================================================
+2026-03-27 16:11:37 | INFO     | Role: AI Research Scientist | Location: Bengaluru
+2026-03-27 16:11:37 | INFO     | Boards: ['indeed.co.in', 'naukri.com', 'wellfound.com']
+2026-03-27 16:11:37 | INFO     | No memory file found — starting fresh.
+2026-03-27 16:12:18 | INFO     | ============================================================
+2026-03-27 16:12:18 | INFO     | Job Search Agent  [Gemini 2.5 Flash Lite + DuckDuckGo]
+2026-03-27 16:12:18 | INFO     | ============================================================
+2026-03-27 16:12:18 | INFO     | Role: AI Research Scientist | Location: Bengaluru
+2026-03-27 16:12:18 | INFO     | Boards: ['indeed.co.in', 'naukri.com', 'wellfound.com']
+2026-03-27 16:12:18 | INFO     | No memory file found — starting fresh.
+2026-03-27 16:12:18 | INFO     | [Step 1] Calling Gemini...
+2026-03-27 16:12:19 | INFO     | Tool: web_search({'query': 'AI Research Scientist Python Bengaluru site:indeed.co.in', 'max_results': 10.0})
+2026-03-27 16:12:19 | INFO     | Tool: web_search({'query': 'AI Research Scientist LLM remote India site:naukri.com', 'max_results': 10.0})
+2026-03-27 16:12:19 | INFO     | Tool: web_search({'query': 'AI Research Scientist RL hiring 2025 site:wellfound.com', 'max_results': 10.0})
+2026-03-27 16:12:19 | INFO     | Tool: web_search({'query': 'AI Research Scientist Python LLM RL Bengaluru site:indeed.co.in', 'max_results': 10.0})
+2026-03-27 16:12:19 | INFO     | Searching: AI Research Scientist Python Bengaluru site:indeed.co.in
+2026-03-27 16:12:23 | INFO     | Captured 9 new jobs. Total so far: 9
+2026-03-27 16:12:27 | INFO     | Result: Results for 'AI Research Scientist Python Bengaluru site:indeed.co.in':
+
+- Mathematician Salaries in India | Indeed.co.in
+  https://www.indeed.co.in/s
+2026-03-27 16:12:27 | INFO     | Searching: AI Research Scientist LLM remote India site:naukri.com
+2026-03-27 16:12:31 | INFO     | Captured 10 new jobs. Total so far: 19
+2026-03-27 16:12:35 | INFO     | Result: Results for 'AI Research Scientist LLM remote India site:naukri.com':
+
+- naukri.com
+  https://www.naukri.com/
+  Jobs - Jobs inIndia- Recruitment - Job
+2026-03-27 16:12:35 | INFO     | Searching: AI Research Scientist RL hiring 2025 site:wellfound.com
+2026-03-27 16:12:39 | INFO     | Captured 10 new jobs. Total so far: 29
+2026-03-27 16:12:43 | INFO     | Result: Results for 'AI Research Scientist RL hiring 2025 site:wellfound.com':
+
+- Best Bioinformatics Companies and Startups to Work for in 2026
+  https://wel
+2026-03-27 16:12:43 | INFO     | Searching: AI Research Scientist Python LLM RL Bengaluru site:indeed.co.in
+2026-03-27 16:12:47 | INFO     | Captured 0 new jobs. Total so far: 29
+2026-03-27 16:12:51 | INFO     | Result: Results for 'AI Research Scientist Python LLM RL Bengaluru site:indeed.co.in':
+
+
+[0 new jobs captured. Total collected: 29]
+2026-03-27 16:12:51 | INFO     | [Step 2] Calling Gemini...
+2026-03-27 16:12:51 | INFO     | [Done] Agent finished.
+2026-03-27 16:12:51 | INFO     | Jobs collected: 29
+2026-03-27 16:12:51 | INFO     | Saved TXT  → E:\Phd\IP\Codes\Job_agent\output\ai_research_scientist_jobs_bengaluru_20260327_1612.txt
+2026-03-27 16:12:51 | INFO     | Saved CSV  → E:\Phd\IP\Codes\Job_agent\output\ai_research_scientist_jobs_bengaluru_20260327_1612.csv
+2026-03-27 16:12:51 | INFO     | Saved JSON → E:\Phd\IP\Codes\Job_agent\output\ai_research_scientist_jobs_bengaluru_20260327_1612.json
+2026-03-27 16:12:51 | INFO     | Saved 29 job URLs to memory.
+2026-03-27 16:12:51 | INFO     | Email disabled in config — skipping.
+2026-03-27 16:12:51 | INFO     | Done.

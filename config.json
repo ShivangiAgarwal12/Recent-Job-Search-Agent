@@ -4,11 +4,11 @@
     "skills": "Python, LLM, RL",
     "experience": "0-2 years",
     "location": "Bengaluru",
-    "job_type": "Remote"
+    "job_type": "Any"
   },
   "search": {
     "job_boards": ["indeed.co.in", "naukri.com", "wellfound.com"],
-    "max_results_per_search": 8,
+    "max_results_per_search": 10,
     "num_searches": 4,
     "delay_between_searches": 4
   },
