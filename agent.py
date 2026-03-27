@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 23 10:29:35 2026
-
-@author: shiva_xjtzfpt
-"""
 
 """
 Job Search Agent — 100% Free Stack
@@ -24,7 +19,7 @@ Set your key — either paste it directly below, or set as env variable:
 Run:
   python job_search_agent_free.py
 """
-
+#%%
 import os
 from datetime import datetime
 
@@ -32,33 +27,12 @@ import google.generativeai as genai
 import google.ai.generativelanguage as glm
 # from duckduckgo_search import DDGS
 from ddgs import DDGS
-os.environ["GEMINI_API_KEY"] = "Update your key here"
+os.environ["GEMINI_API_KEY"] = "Your Key Here"
 
+from tools import *
+from system_prompt import *
 
-
-
-def web_search(query: str, max_results: int = 8) -> str:
-    """Search the web for job postings on LinkedIn, Naukri, Indeed, Glassdoor.
-    Call this multiple times with different queries to find diverse results.
-
-    Args:
-        query: Search query e.g. 'React developer jobs Bengaluru India 2025'
-        max_results: Number of results to fetch. Default is 8.
-    """
-    pass
-
-
-def save_jobs_to_file(filename: str, content: str) -> str:
-    """Save the final formatted list of job postings to a txt file on disk.
-    Call this ONCE at the end after collecting all results.
-
-    Args:
-        filename: Name of the output file e.g. react_jobs_bengaluru.txt
-        content: All job listings formatted as clear readable text.
-    """
-    pass
-
-
+#%%
 # Pass the function OBJECTS (not dicts) — Gemini parses them automatically
 TOOLS = [web_search, save_jobs_to_file]
 
@@ -76,7 +50,7 @@ def execute_tool(tool_name: str, tool_input: dict) -> str:
     # ── web_search: call DuckDuckGo ────────────
     if tool_name == "web_search":
         query       = tool_input.get("query", "")
-        max_results = int(tool_input.get("max_results", 8))
+        max_results = int(tool_input.get("max_results", 10))
 
         print(f"    Searching: {query}")
 
@@ -206,42 +180,7 @@ def run_agent(system_prompt: str, user_message: str, verbose: bool = True) -> st
     return "Agent stopped."
 
 
-# ─────────────────────────────────────────────
-# STEP 4: Prompts
-# ─────────────────────────────────────────────
 
-def build_system_prompt() -> str:
-    # WHO the agent is — permanent rules, never changes during a run
-    return """You are a professional job search agent for the Indian job market.
-
-ROLE:
-- Use web_search to find real, active job postings
-- Search LinkedIn, Naukri, Indeed India, Glassdoor, Wellfound, Internshala
-- Never fabricate listings — only report what you find
-
-SEARCH STRATEGY:
-- Run 3-5 different searches with varied queries
-- Mix: role + city, role + skills, role + job board
-
-OUTPUT:
-- Collect 8-12 listings total
-- For each: title, company, location, type, description, URL
-- Call save_jobs_to_file once at the end with everything
-- Finish with a short summary"""
-
-
-def build_user_message(role, skills, experience, location, job_type) -> str:
-    # WHAT to do this run — changes every time
-    return f"""Find job postings for:
-- Role: {role}
-- Skills: {skills}
-- Experience: {experience}
-- Location: {location}, India
-- Job Type: {job_type}
-
-Save results to: {role.lower().replace(' ', '_')}_jobs_{location.lower().replace(' ', '_')}.txt
-
-Then summarise what you found."""
 
 
 # ─────────────────────────────────────────────

@@ -17,8 +17,18 @@ no GUI, no subscription, no algorithm deciding what you see.
 
 An AI-powered job search agent that searches the web for job postings matching your profile and saves results to a file.
 
+
+### Features
+
+- Runs **3–5 varied searches** to maximise result diversity
+- **Scores each job 1–10** based on how well it matches your profile
+- Filters and shows **only top-scoring listings** first
+- Saves all results to a local `.txt` file automatically
+- Adds a short delay between searches to stay within free API limits
+- Prints exact file save path so you always know where results are
+
+
 ### Building Features (In Progress)
- - Agent for job search (finished)
  - Email yourself the results (under progress)
  - Remove duplicate jobs (under progress)
  - More to follow .. 
@@ -95,6 +105,8 @@ data_scientist_jobs_bengaluru.txt
 ```
 job-search-agent/
 ├── agent.py          # main agent script
+├── tools.py          # tools 
+├── system_prompt.py  # system prompt to return the functionalities
 ├── README.md         # this file
 └── .gitignore        # keeps your API key off GitHub
 ```
